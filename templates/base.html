@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Stationery Shop{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+      :root{
+        --bg:#0b0f14;--fg:#0b0f14; /* placeholders to avoid FOUC */
+      }
+      html[data-theme="dark"]{
+        --bg:#000000;--fg:#ffffff;--muted:#d1d5db;
+        --primary:#ffd54a;--primary-contrast:#0b0f14;
+        --card-bg:#000000;--border:#1f2638;--table-stripe:rgba(255,255,255,.04);--table-hover:rgba(255,255,255,.06);
+        --glass-bg: rgba(18,22,35,.75);
+        --elev: 0 6px 20px rgba(0,0,0,.35);
+        --input-bg:#0f1627;--input-border:#26324f;--input-placeholder:#7a869a;
+        --nav-bg: var(--card-bg);
+      }
+      html[data-theme="light"]{
+        --bg:#f8fafc;--fg:#0f172a;--muted:#475569;
+        --primary:#3b82f6;--primary-contrast:#ffffff;
+        --card-bg:#ffffff;--border:#e5e7eb;--table-stripe:rgba(0,0,0,.03);--table-hover:rgba(0,0,0,.05);
+        --glass-bg: rgba(255,255,255,.85);
+        --elev: 0 8px 28px rgba(2,8,20,.08);
+        --input-bg:#ffffff;--input-border:#d1d5db;--input-placeholder:#9ca3af;
+        --nav-bg:#ffffff;
+      }
+      body{background-color:var(--bg);color:var(--fg)}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary">
+  <div class="container-fluid py-2">
+    <div class="d-flex align-items-center w-100">
+      <a class="navbar-brand d-flex align-items-center gap-2 ms-2 me-3" href="{{ url_for('items') }}">
+        <span class="brand-dot d-inline-block"></span>
+        Stationery
+      </a>
+      <button class="navbar-toggler d-lg-none me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="flex-grow-1 collapse navbar-collapse justify-content-center" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('items') }}">Items</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('items') }}#bills">Bills</a>
+          </li>
+        </ul>
+      </div>
+      <div class="ms-auto">
+        <button class="btn btn-sm theme-toggle d-inline-flex align-items-center gap-2" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+          <span class="theme-icon icon-sun" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 4V2M12 22v-2M4.93 4.93L3.51 3.51M20.49 20.49l-1.42-1.42M4 12H2m20 0h-2M4.93 19.07L3.51 20.49M20.49 3.51l-1.42 1.42" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </span>
+          <span class="theme-icon icon-moon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  </nav>
+
+<main class="container my-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+        {% for category, msg in messages %}
+          <div class="toast align-items-center text-bg-{{ 'success' if category=='success' else ('danger' if category=='danger' else 'info') }} border-0 show mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body">{{ msg }}</div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Global Modal -->
+<div class="modal fade" id="appModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background-color: var(--card-bg); color: var(--fg); border-color: var(--border);">
+      <div class="modal-header" style="border-color: var(--border);">
+        <h5 class="modal-title" id="appModalTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="appModalBody"></div>
+      <div class="modal-footer" id="appModalFooter" style="border-color: var(--border);"></div>
+    </div>
+  </div>
+  </div>
+<script>
+  (function(){
+    const key='theme';
+    const root=document.documentElement;
+    const saved=localStorage.getItem(key) || 'dark';
+    root.setAttribute('data-theme', saved);
+    const btn=document.getElementById('themeToggle');
+    if(btn){
+      const setIcons = () => {
+        const isDark = root.getAttribute('data-theme')==='dark';
+        btn.querySelector('.icon-sun').style.display = isDark ? 'none' : 'inline-flex';
+        btn.querySelector('.icon-moon').style.display = isDark ? 'inline-flex' : 'none';
+      };
+      setIcons();
+      btn.addEventListener('click',()=>{
+        const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem(key, next);
+        setIcons();
+      });
+    }
+    // Modal helper
+    window.showDialog = function({title, bodyHtml, footerButtons}){
+      document.getElementById('appModalTitle').textContent = title || '';
+      document.getElementById('appModalBody').innerHTML = bodyHtml || '';
+      const footer = document.getElementById('appModalFooter');
+      footer.innerHTML = '';
+      (footerButtons||[]).forEach(btn => footer.appendChild(btn));
+      const modal = new bootstrap.Modal(document.getElementById('appModal'), { keyboard: true });
+      modal.show();
+      return modal;
+    }
+  })();
+</script>
+<footer class="text-center text-muted small py-4">
+  <div>Stationery Manager • Flask</div>
+  <div><a class="link-secondary" href="{{ url_for('items') }}">Home</a></div>
+  </footer>
+
+</body>
+</html>
+
+

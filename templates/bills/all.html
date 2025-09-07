@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}All Bills - Stationery Shop{% endblock %}
+{% block content %}
+<div class="page-header d-flex align-items-center justify-content-between mb-4">
+  <div class="d-flex align-items-center gap-3">
+    <div class="icon-blob bg-gradient-primary d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">receipt_long</span>
+    </div>
+    <div>
+      <div class="text-secondary small mb-1">Billing</div>
+      <h1 class="h4 mb-0">All Items Bill</h1>
+    </div>
+  </div>
+  <span class="text-secondary small">Generated at {{ now }}</span>
+</div>
+
+<div class="card card-glass">
+  <div class="card-body p-0">
+<div class="table-responsive">
+  <table class="table table-striped align-middle theme-text">
+    <thead>
+      <tr>
+        <th>SNo</th>
+        <th>Item Name</th>
+        <th>Dealer</th>
+        <th>Cost</th>
+        <th>Selling</th>
+        <th>Profit</th>
+        <th>Loss</th>
+        <th>GST</th>
+        <th>Bought</th>
+        <th>Sold</th>
+        <th>Remaining</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in items %}
+      <tr>
+        <td>{{ i.SNo }}</td>
+        <td>{{ i.ItemName }}</td>
+        <td>{{ i.NameOfDealer }}</td>
+        <td>{{ '%.2f'|format(i.CostPrice) }}</td>
+        <td>{{ '%.2f'|format(i.SellingPrice) }}</td>
+        <td>{{ '%.2f'|format(i.Profit or 0) }}</td>
+        <td>{{ '%.2f'|format(i.Loss or 0) }}</td>
+        <td>{{ '%.2f'|format(i.GST) }}</td>
+        <td>{{ i.StockBought }}</td>
+        <td>{{ i.StockSold }}</td>
+        <td>{{ i.StockRemaining }}</td>
+        <td>{{ i.DateOfPurchase }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="12" class="text-center text-muted">No items found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+  </div>
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Sell - Stationery Shop{% endblock %}
+{% block content %}
+<div class="page-header d-flex align-items-center justify-content-between mb-4">
+  <div class="d-flex align-items-center gap-3">
+    <div class="icon-blob bg-gradient-primary d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">point_of_sale</span>
+    </div>
+    <div>
+      <div class="text-secondary small mb-1">Billing</div>
+      <h1 class="h4 mb-0">Generate Bill</h1>
+    </div>
+  </div>
+  <a class="btn btn-outline-secondary" href="{{ url_for('items') }}">Back</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card card-glass p-3">
+      <form method="post" class="row g-3 needs-validation" novalidate>
+        <div class="col-md-4">
+          <label class="form-label">SNo (optional)</label>
+          <input type="number" name="SNo" class="form-control" min="1" step="1">
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Item Name</label>
+          <input type="text" name="ItemName" class="form-control" placeholder="Item name if SNo unknown">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Quantity</label>
+          <input type="number" name="Quantity" class="form-control" required min="1" step="1" value="1">
+          <div class="invalid-feedback">Quantity is required</div>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Generate Bill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card card-glass p-3">
+      <div class="section-title">Receipt</div>
+      {% if receipt %}
+      <div class="mt-2">
+        <div class="d-flex justify-content-between"><span class="text-secondary">Time</span><span>{{ receipt.time }}</span></div>
+        <div class="d-flex justify-content-between"><span class="text-secondary">SNo</span><span>{{ receipt.sno }}</span></div>
+        <div class="d-flex justify-content-between"><span class="text-secondary">Item</span><span>{{ receipt.name }}</span></div>
+        <div class="d-flex justify-content-between"><span class="text-secondary">Qty</span><span>{{ receipt.qty }}</span></div>
+        <div class="d-flex justify-content-between"><span class="text-secondary">Unit Price</span><span>{{ '%.2f'|format(receipt.unit_price) }}</span></div>
+        <hr/>
+        <div class="d-flex justify-content-between h5"><span>Total</span><span>{{ '%.2f'|format(receipt.total) }}</span></div>
+        <div class="text-secondary small">Remaining stock: {{ receipt.remaining }}</div>
+      </div>
+      {% else %}
+      <div class="text-secondary">No receipt yet. Fill details and generate a bill.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const form = document.querySelector('form.needs-validation');
+  if(form){
+    form.addEventListener('submit', (event) => {
+      if (!form.checkValidity()) {
+        event.preventDefault(); event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  }
+})();
+</script>
+{% endblock %}
+
+

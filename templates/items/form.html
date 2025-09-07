@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit' if item else 'New' }} Item - Stationery Shop{% endblock %}
+{% block content %}
+<div class="page-header d-flex align-items-center justify-content-between mb-4">
+  <div class="d-flex align-items-center gap-3">
+    <div class="icon-blob bg-gradient-primary d-flex align-items-center justify-content-center">
+      <span class="material-symbols-outlined">inventory_2</span>
+    </div>
+    <div>
+      <div class="text-secondary small mb-1">Inventory</div>
+      <h1 class="h4 mb-0">{{ 'Edit' if item else 'Add' }} Item</h1>
+    </div>
+  </div>
+  <a class="btn btn-outline-light" href="{{ url_for('items') }}">Back</a>
+  </div>
+
+<form method="post" class="needs-validation" novalidate>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card card-glass p-3">
+        <div class="row g-3">
+          {% if not item or not item.SNo %}
+          <div class="col-md-3">
+            <label class="form-label">SNo</label>
+            <input type="number" name="SNo" class="form-control form-control-lg" required min="1" step="1" placeholder="e.g. 101" value="{{ item.SNo if item and item.SNo }}">
+            <div class="invalid-feedback">SNo is required.</div>
+          </div>
+          {% endif %}
+          <div class="col-md-9">
+            <label class="form-label">Item Name</label>
+            <input type="text" name="ItemName" class="form-control form-control-lg" value="{{ item.ItemName if item }}" required placeholder="Notebook, Pen, Marker...">
+            <div class="invalid-feedback">Item Name is required.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Dealer</label>
+            <input type="text" name="NameOfDealer" class="form-control" value="{{ item.NameOfDealer if item }}" required placeholder="Supplier name">
+            <div class="invalid-feedback">Dealer is required.</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Cost Price</label>
+            <div class="input-group">
+              <span class="input-group-text">₹</span>
+              <input type="number" step="0.01" min="0" name="CostPrice" class="form-control" value="{{ item.CostPrice if item }}" required placeholder="0.00">
+            </div>
+            <div class="invalid-feedback">Cost price is required.</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Selling Price</label>
+            <div class="input-group">
+              <span class="input-group-text">₹</span>
+              <input type="number" step="0.01" min="0" name="SellingPrice" class="form-control" value="{{ item.SellingPrice if item }}" required placeholder="0.00">
+            </div>
+            <div class="invalid-feedback">Selling price is required.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mt-1">
+        <div class="col-md-6">
+          <div class="card card-glass p-3 h-100">
+            <div class="section-title">Inventory</div>
+            <div class="row g-3 mt-1">
+              <div class="col-6">
+                <label class="form-label">Stock Bought</label>
+                <input type="number" name="StockBought" class="form-control" value="{{ item.StockBought if item }}" required min="0" step="1" placeholder="0">
+                <div class="invalid-feedback">Stock bought is required.</div>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Stock Sold</label>
+                <input type="number" name="StockSold" class="form-control" value="{{ item.StockSold if item }}" required min="0" step="1" placeholder="0">
+                <div class="invalid-feedback">Stock sold is required.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card card-glass p-3 h-100">
+            <div class="section-title">Purchase</div>
+            <div class="mt-1">
+              <label class="form-label">Date Of Purchase</label>
+              <input type="date" name="DateOfPurchase" class="form-control" value="{{ item.DateOfPurchase if item }}" required>
+              <div class="invalid-feedback">Date of purchase is required.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card card-glass p-3">
+        <div class="section-title">Summary</div>
+        <ul class="list-unstyled small text-secondary mt-2 mb-3">
+          <li>GST auto-calculated at 18%</li>
+          <li>Profit/Loss computed from prices</li>
+          <li>Stock Remaining = Bought - Sold</li>
+        </ul>
+        <div class="d-grid gap-2">
+          <button class="btn btn-primary btn-lg" type="submit">Save Item</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('items') }}">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="sticky-actions d-md-none">
+  <div class="container d-grid gap-2">
+    <button class="btn btn-primary" formmethod="post" formnovalidate onclick="document.querySelector('form').requestSubmit()">Save</button>
+    <a class="btn btn-secondary" href="{{ url_for('items') }}">Cancel</a>
+  </div>
+  </div>
+
+<script>
+(() => {
+  const form = document.querySelector('form.needs-validation') || document.querySelector('form');
+  form.addEventListener('submit', (event) => {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    form.classList.add('was-validated');
+  }, false);
+})();
+</script>
+{% endblock %}
+
+
