@@ -6,11 +6,7 @@ A modern, responsive Flask UI for your Stationery management (originally CLI-bas
 
 1. Create and activate a virtual environment (recommended)
    - Windows PowerShell
-     ```powershell
-     cd C:\\Users\\aryan\\Desktop\\Coding\\Python\\Stationary
-     py -m venv .venv
-     .\\.venv\\Scripts\\Activate.ps1
-     ```
+   - 
 2. Install dependencies
    ```powershell
    pip install -r requirements.txt
